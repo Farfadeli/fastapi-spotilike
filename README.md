@@ -14,3 +14,6 @@
 1. Faire la commande `uvicorn main:app --reload`
 
 2. Pour acceder à l'api rendez-vous sur ce lien [http://localhost:8000/docs](http://localhost:8000/docs)
+
+
+Nicolas - Baptiste
