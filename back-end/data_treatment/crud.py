@@ -26,9 +26,11 @@ def get_tracks_of_albums(db: Session, album_id: int):
 def get_all_genres(db: Session):
     return db.query(models.genres).all()
 
-def get_tracks_of_artist(db: Session, artist_id):
+def get_tracks_of_artist(db: Session, artist_id: int):
     return db.query(models.tracks).join(models.albums).join(models.artist_albums).join(models.artists).filter(models.artists.id_artist == artist_id).all()
 
+def get_albums_of_artist(db : Session, artist_id : int):
+    return db.query(models.albums).join(models.artist_albums).join(models.artists).filter(models.artists.id_artist == artist_id).all()
 
 
 def create_user(db: Session, user: schemas.create_user):

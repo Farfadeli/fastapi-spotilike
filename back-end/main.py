@@ -70,6 +70,10 @@ def get_all_genres(db: Session = Depends(get_db)):
 def get_tracks_of_artist(artist_id: int, db : Session = Depends(get_db)):
     return crud.get_tracks_of_artist(artist_id=artist_id, db=db)
 
+@app.get("/api/artists/{artist_id}/albums", response_model=list[schemas.albums])
+def get_albums_of_artist(artist_id: int , db : Session = Depends(get_db)):
+    return crud.get_albums_of_artist(artist_id=artist_id, db=db)
+
 # POST PATH
 
 @app.post("/api/users/login")
