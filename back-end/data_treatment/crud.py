@@ -2,6 +2,14 @@ from sqlalchemy.orm import Session
 from sqlalchemy import update, delete, insert
 from . import schemas, models
 from sqlalchemy.sql import text
+from cryptography.hazmat.primitives import serialization
+import jwt
+from dotenv import load_dotenv
+import os
+
+
+
+load_dotenv()
 
 def get_all_albums(db: Session):
     return db.query(models.albums).all()
@@ -19,10 +27,16 @@ def get_tracks_of_artist(db: Session, artist_id):
     return db.query(models.tracks).join(models.albums).join(models.artist_albums).join(models.artists).filter(models.artists.id_artist == artist_id).all()
 
 def create_user(db: Session, user: schemas.create_user):
-    db_user = models.users(username=user.username , mail=user.mail, password=user.password)
+    
+    encoded_jwt = jwt.encode({"password" : user.password}, os.getenv('SECRET'), algorithm="HS256")
+    
+    print(encoded_jwt)
+    
+    db_user = models.users(username=user.username , mail=user.mail, password=encoded_jwt)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+
     return db_user
 
 def create_album(db: Session, album: schemas.albums):
@@ -130,3 +144,4 @@ def delete_artist(db: Session, artist_id: int):
     db.commit()
     
     return {"code": 200}
+

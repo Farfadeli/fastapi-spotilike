@@ -2,10 +2,20 @@ from fastapi import FastAPI,Depends
 from sqlalchemy.orm import Session
 
 from data_treatment import crud, models, schemas, alchemy
+from dotenv import load_dotenv
+
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = ['*']
 
 
+
+load_dotenv()
 
 app = FastAPI()
+
+
+app.add_middleware(CORSMiddleware, allow_origins=origins)
 
 def get_db():
     db = alchemy.Session_local()
@@ -43,6 +53,7 @@ def get_tracks_of_artist(artist_id: int, db : Session = Depends(get_db)):
 
 @app.post("/api/users/login")
 def create_user(user: schemas.create_user, db: Session = Depends(get_db)):
+    
     return crud.create_user(user=user, db=db)
 
 @app.post("/api/albums")
