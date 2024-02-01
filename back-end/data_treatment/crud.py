@@ -6,7 +6,7 @@ from cryptography.hazmat.primitives import serialization
 import jwt
 from dotenv import load_dotenv
 import os
-
+import requests
 
 
 load_dotenv()
@@ -31,6 +31,8 @@ def create_user(db: Session, user: schemas.create_user):
     encoded_jwt = jwt.encode({"password" : user.password}, os.getenv('SECRET'), algorithm="HS256")
     
     print(encoded_jwt)
+    
+    requests.session["token"] = encoded_jwt
     
     db_user = models.users(username=user.username , mail=user.mail, password=encoded_jwt)
     db.add(db_user)

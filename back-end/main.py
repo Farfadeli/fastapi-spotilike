@@ -29,6 +29,7 @@ def get_db():
 async def root():
     return {"Message" : "Hello, world!"}
 
+
 @app.get("/api/albums", response_model=list[schemas.albums])
 def get_all_albums(db: Session = Depends(get_db)):
     return crud.get_all_albums(db)
