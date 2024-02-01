@@ -25,6 +25,15 @@ class genres(BaseModel):
     class config:
         orm_mode = True
 
+class artists(BaseModel):
+    id_artist: int
+    name: str
+    avatar: str
+    biography: str
+    
+    class config:
+        orm_mode = True
+
 class create_user(BaseModel):
     username: str = ""
     mail: str = ""

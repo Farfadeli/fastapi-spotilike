@@ -5,8 +5,18 @@ from data_treatment import crud, models, schemas, alchemy
 from dotenv import load_dotenv
 
 from fastapi.middleware.cors import CORSMiddleware
+import requests
 
-origins = ['*']
+origins = [
+    "http://localhost:3000",
+]
+
+allowed_methods = ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"]
+allowed_headers = [
+    "Content-Type",
+    "Authorization",
+]
+
 
 
 
@@ -15,7 +25,14 @@ load_dotenv()
 app = FastAPI()
 
 
-app.add_middleware(CORSMiddleware, allow_origins=origins)
+# Configurer les options
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=allowed_methods,
+    allow_headers=allowed_headers,
+)
 
 def get_db():
     db = alchemy.Session_local()
@@ -29,6 +46,9 @@ def get_db():
 async def root():
     return {"Message" : "Hello, world!"}
 
+@app.get("/api/artists", response_model=list[schemas.artists])
+def get_all_artist(db : Session = Depends(get_db)):
+    return crud.get_all_artists(db)
 
 @app.get("/api/albums", response_model=list[schemas.albums])
 def get_all_albums(db: Session = Depends(get_db)):
@@ -50,11 +70,10 @@ def get_all_genres(db: Session = Depends(get_db)):
 def get_tracks_of_artist(artist_id: int, db : Session = Depends(get_db)):
     return crud.get_tracks_of_artist(artist_id=artist_id, db=db)
 
-# POST PAHT
+# POST PATH
 
 @app.post("/api/users/login")
-def create_user(user: schemas.create_user, db: Session = Depends(get_db)):
-    
+async def create_user(user: schemas.create_user, db: Session = Depends(get_db)):
     return crud.create_user(user=user, db=db)
 
 @app.post("/api/albums")

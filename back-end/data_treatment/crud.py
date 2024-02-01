@@ -14,6 +14,9 @@ load_dotenv()
 def get_all_albums(db: Session):
     return db.query(models.albums).all()
 
+def get_all_artists(db: Session):
+    return db.query(models.artists).all()
+
 def get_albums(db: Session, album_id : int):
     return db.query(models.albums).filter(models.albums.id_album == album_id).first()
 
@@ -26,20 +29,21 @@ def get_all_genres(db: Session):
 def get_tracks_of_artist(db: Session, artist_id):
     return db.query(models.tracks).join(models.albums).join(models.artist_albums).join(models.artists).filter(models.artists.id_artist == artist_id).all()
 
+
+
 def create_user(db: Session, user: schemas.create_user):
     
     encoded_jwt = jwt.encode({"password" : user.password}, os.getenv('SECRET'), algorithm="HS256")
     
     print(encoded_jwt)
     
-    requests.session["token"] = encoded_jwt
     
     db_user = models.users(username=user.username , mail=user.mail, password=encoded_jwt)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
 
-    return db_user
+    return {"token" : encoded_jwt}
 
 def create_album(db: Session, album: schemas.albums):
     db_album = models.albums(id_album=album.id_album, title=album.title, cover=album.title, release_date=album.release_date)
