@@ -7,9 +7,7 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 
-origins = [
-    "http://localhost:3000",
-]
+origins = ["*"]
 
 allowed_methods = ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"]
 allowed_headers = [
@@ -113,5 +111,5 @@ def delete_album(album_id: int, db : Session = Depends(get_db)):
     return crud.delete_albums(album_id=album_id, db=db)
 
 @app.delete("/api/artist/{artist_id}")
-def delete_artist(artist_id: int, db: Session = Depends(get_db)):
-    return crud .delete_artist(artist_id=artist_id, db=db)
+def delete_artist(artist_id: int,token: str, db: Session = Depends(get_db)):
+    return crud .delete_artist(artist_id=artist_id,token=token, db=db)

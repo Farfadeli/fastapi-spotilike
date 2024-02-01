@@ -94,7 +94,7 @@ def delete_albums(db: Session, album_id: int):
     
     return {"code": 200}
 
-def delete_artist(db: Session, artist_id: int):
+def delete_artist(db: Session, artist_id: int, token: str):
     clear = text(f""" DELETE FROM track_genres
     WHERE track_genres.id_tracks in (
 	SELECT id_tracks from tracks
