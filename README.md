@@ -7,7 +7,7 @@
 3. activer l'environement virtuel
 
 4. Installer les dépendances à l'aides du fichier requirement.txt avec la commande
-##`pip install -r requirement.txt`
+`pip install -r requirement.txt`
 
 #Lancement du backEnd
 
