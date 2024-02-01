@@ -1,4 +1,4 @@
-#Installation du projet
+# Installation du projet
 
 1. Cloner le projet
 
@@ -9,7 +9,7 @@
 4. Installer les dépendances à l'aides du fichier requirement.txt avec la commande
 `pip install -r requirement.txt`
 
-#Lancement du backEnd
+# Lancement du projet
 
 1. Faire la commande `uvicorn main:app --reload`
 
