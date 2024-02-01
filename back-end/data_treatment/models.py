@@ -39,6 +39,8 @@ class tracks(alchemy.Base):
     title = Column(String, nullable=False)
     duration = Column(Integer, nullable=False)
     id_album = Column(Integer, ForeignKey("albums.id_album"))
+    preview = Column(String)
+    image = Column(String)
 
 class artist_albums(alchemy.Base):
     __tablename__ = "artist_albums"

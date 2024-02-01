@@ -13,6 +13,7 @@ class tracks(BaseModel):
     id_tracks : int
     title: str
     duration: int
+    preview: str
     
     class config:
         orm_mode = True

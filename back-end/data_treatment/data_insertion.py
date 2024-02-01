@@ -47,6 +47,15 @@ def insert_tracks(values):
         conn.commit()
     
     print("\t\ttrack ajoutée :", values[0])
+    
+def add_preview(id_tracks: int ,preview_link: str):
+    conn = sqlite3.connect("../spotilike.sqlite3")
+    cursor = conn.cursor()
+    
+    cursor.execute("UPDATE tracks SET preview = ? WHERE id_tracks = ?", (preview_link,id_tracks))
+    conn.commit()
+    
+    print("ADD")
 
 
 nb_artist = 100
@@ -60,7 +69,7 @@ for e in range(1, nb_artist+1):
     if 'error' in data_artist: continue
     artist_id = data_artist["id"]
     
-    insert_artist((artist_id, data_artist["name"], data_artist["picture_xl"], "Lorem Ipsum Dolores Sit Ame"))
+    #insert_artist((artist_id, data_artist["name"], data_artist["picture_xl"], "Lorem Ipsum Dolores Sit Ame"))
     
     url_albums = f"https://api.deezer.com/artist/{e}/albums"
     req_albums = requests.get(url_albums)
@@ -68,7 +77,7 @@ for e in range(1, nb_artist+1):
     
     for album in data_albums:
         if 'error' in album : continue
-        insert_albums(artist_id, (album["id"], album["title"], album["cover_xl"], album["release_date"]))
+        #insert_albums(artist_id, (album["id"], album["title"], album["cover_xl"], album["release_date"]))
         
         url_tracks = f"https://api.deezer.com/album/{album['id']}/tracks"
         req_tracks = requests.get(url_tracks)
@@ -76,6 +85,7 @@ for e in range(1, nb_artist+1):
         
         for track in data_track:
             if 'error' in data_track: continue
-            insert_tracks((track["id"], track["title"], track["duration"], album["id"]))
+            add_preview(track["id"], track["preview"])
+            #insert_tracks((track["id"], track["title"], track["duration"], album["id"]))
         
     
