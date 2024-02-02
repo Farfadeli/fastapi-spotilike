@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import update, delete, insert
+from sqlalchemy import update, delete, insert, select, func
 from . import schemas, models
 from sqlalchemy.sql import text
 from cryptography.hazmat.primitives import serialization
@@ -93,6 +93,11 @@ def delete_albums(db: Session, album_id: int):
     db.commit()
     
     return {"code": 200}
+
+def login(db: Session, user: schemas.login):
+    if db.query(models.users).filter(models.users.mail == user.mail, models.users.password == jwt.encode({"password": user.password}, key=os.getenv("SECRET"), algorithm="HS256")).count() >= 1:
+        return {"authorized" : True}
+    return {"authorized" : False}
 
 def delete_artist(db: Session, artist_id: int, token: str):
     clear = text(f""" DELETE FROM track_genres

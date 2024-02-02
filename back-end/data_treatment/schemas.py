@@ -54,4 +54,11 @@ class modify_album(BaseModel):
 class modify_genre(BaseModel):
     title: str
     description: str
+
+class Token(BaseModel):
+    access_token : str
+    token_type : str
     
+class login(BaseModel):
+    mail: str
+    password: str    

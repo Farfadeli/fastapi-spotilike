@@ -1,8 +1,12 @@
-from fastapi import FastAPI,Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-
 from data_treatment import crud, models, schemas, alchemy
 from dotenv import load_dotenv
+import os
+
+from dotenv import load_dotenv
+from typing import Annotated
+
 
 from fastapi.middleware.cors import CORSMiddleware
 import requests
@@ -15,22 +19,9 @@ allowed_headers = [
     "Authorization",
 ]
 
-
-
-
 load_dotenv()
 
 app = FastAPI()
-
-
-# Configurer les options
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=allowed_methods,
-    allow_headers=allowed_headers,
-)
 
 def get_db():
     db = alchemy.Session_local()
@@ -38,6 +29,13 @@ def get_db():
         yield db
     finally:
         db.close()
+        
+SECRET_KEY = os.getenv('SECRET')
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+access_token = "ahah"
+
 
 
 @app.get("/")
@@ -86,6 +84,10 @@ def create_album(album: schemas.albums, db: Session = Depends(get_db)):
 def create_track(track: schemas.tracks, album_id: int, db: Session = Depends(get_db)):
     return crud.create_track(track=track, album_id=album_id, db=db)
 
+@app.post("/api/login")
+def verify_login(user: schemas.login, db: Session = Depends(get_db)):
+    return crud.login(user=user, db=db)
+
 # PATCH PATH
 
 @app.patch("/api/artist/{artist_id}")
@@ -104,12 +106,18 @@ def modify_genre(genre_id: int , genre: schemas.modify_genre, db: Session = Depe
 
 @app.delete("/api/user/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db)):
-    return crud.delete_user(user_id=user_id, db=db)
+    if(access_token != None):
+        return crud.delete_user(user_id=user_id, db=db)
+    return {"error": "Rentrer un token valide"}
 
 @app.delete("/api/albums/{album_id}")
 def delete_album(album_id: int, db : Session = Depends(get_db)):
-    return crud.delete_albums(album_id=album_id, db=db)
+    if(access_token != None):
+        return crud.delete_albums(album_id=album_id, db=db)
+    return {"error": "Rentrer un token valide"}
 
 @app.delete("/api/artist/{artist_id}")
 def delete_artist(artist_id: int,token: str, db: Session = Depends(get_db)):
-    return crud .delete_artist(artist_id=artist_id,token=token, db=db)
+    if(access_token != None):
+        return crud.delete_artist(artist_id=artist_id,token=token, db=db)
+    return {"error": "Rentrer un token valide"}
